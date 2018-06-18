@@ -1,0 +1,68 @@
+version: '3.3'
+volumes:
+    - /home/luis/.m2:/root/.m2
+    - /home/luis/Documents/projetos/sd_consistency:/root/project
+services:
+#  db:
+#    image: mysql
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - data:/var/lib/mysql
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=password
+#      - MYSQL_DATABASE=app_development
+  spark:
+    image: openjdk:8-jre-alpine
+#    build:
+#      context: maven:3-alpine
+#      args:
+#        paramid: 33333333
+#    ports:
+#     - "8091:8080"
+    volumes:
+        - /home/luis/.m2:/root/.m2
+        - /home/luis/Documents/projetos/sd_consistency:/root/project
+#  spark2:
+#    build:
+#      context: .
+#      args:
+#        paramid: 33333333
+#    ports:
+#     - "8091:8080"
+#    volumes:
+#        - /home/luis/.m2:/root/.m2
+#        - /home/luis/Documents/projetos/sd_consistency/:/root/project
+
+  #db:
+  #  image: mariadb
+  #  environment:
+  #    MYSQL_ROOT_PASSWORD: 123
+  #phpmyadmin:
+  #  image: corbinu/docker-phpmyadmin
+  #  links:
+  #    - db:mysql
+  #  ports:
+  #    - 8181:80
+  #  environment:
+  #    MYSQL_USERNAME: root
+  #    MYSQL_ROOT_PASSWORD: 123
+
+#  spark:
+#      build: .
+#      ports:
+#       - "8090:8080"
+#      args:
+#        paramid: 123456789
+#      volumes:
+#          - /home/luis/.m2:/root/.m2
+#  spark2:
+#      build: .
+#      ports:
+#       - "8091:8080"
+#      args:
+#        paramid: 33333333
+#      volumes:
+#          - /home/luis/.m2:/root/.m2
+  #docker-compose up --build -d
+

@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  db:
+    image: mariadb:latest
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+  sd1:
+    build:
+      context: .
+      args:
+        id: 0
+        count: 2
+    links:
+      - sd2
+      - sd3
+    ports:
+      - "8080:8080"
+  sd2:
+    build:
+      context: .
+      args:
+        id: 2
+        count: 2
+    ports:
+      - "8081:8081"
+  sd3:
+    build:
+      context: .
+      args:
+        id: 3
+        count: 2
+    ports:
+      - "8082:8082"

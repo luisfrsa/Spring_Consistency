@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>SD Concorrency</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div>
+        <h2>Banco 1</h2><br/>
+        <div class="response" id="response1"></div>
+    </div>
+    <div>
+        <h2>Banco 2</h2><br/>
+        <div  class="response"id="response2"></div>
+    </div>
+    <div>
+        <h2>Banco 3</h2><br/>
+        <div class="response" id="response3"></div>
+    </div>
+
+    <div class=div25>
+        <h2>Adicionar novo</h2>
+        <br/>
+        <input type="text" id='nome'><br>
+        <button onclick="adicionarUsuario(8080)">Adicionar em 1</button> <br><br>
+        <button onclick="adicionarUsuario(8081)">Adicionar em 2</button><br><br>
+        <button onclick="adicionarUsuario(8082)">Adicionar em 3</button><br><br>
+    </div>
+    <div class=div25>
+        <h2>Consultar por id</h2>
+        <br/>
+        <input type="text" id='id'>
+        <br>
+        <button onclick="consultarUsuario(8080)">Consultar em 1</button>
+        <br>
+        <br>
+        <button onclick="consultarUsuario(8081)">Consultar em 2</button>
+        <br>
+        <br>
+        <button onclick="consultarUsuario(8082)">Consultar em 3</button>
+        <br>
+        <br>
+         Resultado:
+        <span id='result_id'></span>
+        <br/>
+    </div>
+    <div class=div25>
+        <h2>Remover por id</h2>
+        <br/>
+        <input type="text" id='remove'>
+        <br>
+        <button onclick="removerUsuario(8080)">Consultar em 1</button>
+        <br>
+        <br>
+        <button onclick="removerUsuario(8081)">Consultar em 2</button>
+        <br>
+        <br>
+        <button onclick="removerUsuario(8082)">Consultar em 3</button>
+        <br>
+        <br>
+    </div>
+
+    <script>
+        function request(port,param,callback){
+            let url = "http://localhost:"+port+"/"+ param+"/1";
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && (this.status == 200 || this.status == 201)) {
+                    callback(xhttp.responseText);
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();   
+        }
+
+        function updateTables(table,response){
+            document.getElementById('response'+table).innerHTML = response;
+        }
+
+        function adicionarUsuario(port){
+            request(port, "api/user/add/"+document.getElementById('nome').value,function(){});
+        }
+        function consultarUsuario(port){
+            request(port, "api/user/get/"+document.getElementById('id').value,function(response){
+                document.getElementById('result_id').innerHTML = response;
+            });
+        }
+        function removerUsuario(port){
+            request(port, "api/user/remove/"+document.getElementById('remove').value,function(){});
+        }
+        setInterval(function(){
+            request(8080,"api/user",function(response){updateTables(1,response)});
+            // request(8081,"api/user",function(response){updateTables(2,response)});
+            // request(8082,"api/user",function(response){updateTables(3,response)});
+        },1000);
+     
+    </script>
+    <style>
+    .response{font-size:25px;}
+    .div25{float:left;width:30%;text-align:center;}
+    .div25 h2{text-align: center}
+    input{
+        padding:5px;
+        margin-bottom:20px;
+          display:block;
+        width:50%;
+        margin:auto;
+    }
+    button{
+        display:block;
+        width:50%;
+        margin:auto;
+    }
+    </style>
+</body>
+</html>
