@@ -1,9 +1,7 @@
 package br.com.consistency.Consistency.service;
 
 import br.com.consistency.Consistency.config.Config;
-import br.com.consistency.Consistency.model.ResponseVO;
 import br.com.consistency.Consistency.util.Util;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,8 +13,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static br.com.consistency.Consistency.util.Util.*;
 import static java.lang.String.format;
 
 @Service
@@ -25,16 +25,48 @@ public class RequestService {
     private static final Logger log = LoggerFactory.getLogger(RequestService.class);
 
 
-    public void broadCastPrimary(Integer primary, List<Integer> serverList) {
-        System.out.println(serverList.toString());
-        serverList
-                .stream()
+    public static void newPrimary(Integer id, Integer from) {
+        Optional<Integer> primary = Config.servers.stream()
                 .filter(s -> s != Config.id)
-                .forEach(s -> request("808" + s, "newprimary", "update-primary/" + primary.toString()));
+                .findAny();
+        if (primary.isPresent()) {
+            broadCastPrimary(primary.get());
+        }
+        if (Config.id == id) {
+            Config.primary = true;
+        } else {
+            Config.primary = false;
+        }
+        Config.servers = Config.servers.stream().filter(s -> s != from).collect(Collectors.toList());
+        log.error("No server found");
     }
 
-    public String request(String serverPort, String name, String getParam) {
-        log.info(format(Util.getLogMessage() + " -- To:%s, Request name: %s, URL: %s", serverPort, name, getParam));
+    public static void updatePrimary() {
+        Optional<Integer> primary = Config.servers.stream()
+                .filter(s -> s != Config.id)
+                .findAny();
+        if (primary.isPresent()) {
+            broadCastPrimary(primary.get());
+        }
+        Config.primary = false;
+        Config.servers = Config.servers.stream().filter(s -> s != Config.id).collect(Collectors.toList());
+        log.error("No server found");
+    }
+
+    public static void broadCastPrimary(Integer primary) {
+        Config.servers.stream()
+                .filter(s -> s != Config.id)
+                .forEach(s -> request("808" + s, "Broadcast new Primary", "update-primary/" + primary.toString()));
+    }
+
+    public static void broardCastNewUser(String nome) {
+        Config.servers.stream()
+                .filter(s -> s != Config.id)
+                .forEach(s -> request("808" + s, "Broadcast new User", "user/addFromPrimary/" + nome));
+    }
+
+    public static String request(String serverPort, String name, String getParam) {
+        log.info(format(getLogMessage() + " -- To:%s, Request name: %s, URL: %s", serverPort, name, getParam));
         try {
             Thread.currentThread().sleep(1000);
         } catch (InterruptedException e) {
@@ -52,8 +84,6 @@ public class RequestService {
             }
             in.close();
             return content.toString();
-//            Gson gson = new Gson();
-//            return gson.fromJson(content.toString(), ResponseVO.class);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
@@ -63,4 +93,6 @@ public class RequestService {
         }
         return null;
     }
+
+
 }
