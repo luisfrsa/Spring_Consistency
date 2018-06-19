@@ -15,7 +15,7 @@ public class ConsistencyApplication {
         Config.id = Integer.parseInt(args[0]);
         Config.port = Integer.parseInt(args[1]);
         Config.numServer = Integer.parseInt(args[2]) + 1;
-        Config.primary = Config.id == 0;
+        Config.primary = 8080;
         Config.enabled = true;
         Config.servers = IntStream.range(0, Config.numServer).boxed().collect(Collectors.toList());
 

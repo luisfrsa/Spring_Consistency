@@ -14,7 +14,7 @@ public class Util {
 
     public static void delay(){
         try {
-            Thread.sleep(2000 + 500 * ThreadLocalRandom.current().nextInt(4, 8 + 1));
+            Thread.sleep(0 + 500 * ThreadLocalRandom.current().nextInt(2, 10 + 1));
 
         } catch (InterruptedException e) {
             e.printStackTrace();

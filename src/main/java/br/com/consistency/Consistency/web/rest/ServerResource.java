@@ -1,5 +1,6 @@
 package br.com.consistency.Consistency.web.rest;
 
+import br.com.consistency.Consistency.config.Config;
 import br.com.consistency.Consistency.model.User;
 import br.com.consistency.Consistency.service.RequestService;
 import org.slf4j.Logger;
@@ -22,5 +23,20 @@ public class ServerResource {
         RequestService.newPrimary(id, from);
         return new ResponseEntity<Void>(HttpStatus.OK);
 
+    }
+
+
+    @CrossOrigin
+    @GetMapping("/disable/{from}")
+    public ResponseEntity<Void> disable(@PathVariable Integer from) {
+        Config.enabled = false;
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping("/enable/{from}")
+    public ResponseEntity<Void> enable(@PathVariable Integer from) {
+        Config.enabled = true;
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

@@ -26,53 +26,27 @@ public class RequestService {
 
 
     public static void newPrimary(Integer id, Integer from) {
-        Optional<Integer> primary = Config.servers.stream()
-                .filter(s -> s != Config.id)
-                .findAny();
-        if (primary.isPresent()) {
-            broadCastPrimary(primary.get());
-        }
-        if (Config.id == id) {
-            Config.primary = true;
-        } else {
-            Config.primary = false;
-        }
-        Config.servers = Config.servers.stream().filter(s -> s != from).collect(Collectors.toList());
-        log.error("No server found");
+        Config.primary = 8080 + id;
+//        Config.servers = Config.servers.stream().filter(s -> !s.equals(from)).collect(Collectors.toList());
     }
 
     public static void updatePrimary() {
         Optional<Integer> primary = Config.servers.stream()
-                .filter(s -> s != Config.id)
+                .filter(s -> !s.equals(Config.id))
                 .findAny();
         if (primary.isPresent()) {
             broadCastPrimary(primary.get());
         }
-        Config.primary = false;
-        Config.servers = Config.servers.stream().filter(s -> s != Config.id).collect(Collectors.toList());
-        log.error("No server found");
+        Config.primary = 8080 + primary.get();
+//        Config.servers = Config.servers.stream().filter(s -> !s.equals(Config.id)).collect(Collectors.toList());
     }
 
-    public static void broadCastPrimary(Integer primary) {
-        Config.servers.stream()
-                .filter(s -> s != Config.id)
-                .forEach(s -> request("808" + s, "Broadcast new Primary", "update-primary/" + primary.toString()));
-    }
-
-    public static void broardCastNewUser(String nome) {
-        Config.servers.stream()
-                .filter(s -> s != Config.id)
-                .forEach(s -> request("808" + s, "Broadcast new User", "user/addFromPrimary/" + nome));
-    }
 
     public static String request(String serverPort, String name, String getParam) {
+        log.info(Config.str());
         log.info(format(getLogMessage() + " -- To:%s, Request name: %s, URL: %s", serverPort, name, getParam));
         try {
-            Thread.currentThread().sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        try {
+            Util.delay();
             URL url = new URL(format("http://localhost:%s/api/%s/%s", serverPort, getParam, Config.id));
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -84,6 +58,7 @@ public class RequestService {
             }
             in.close();
             return content.toString();
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
@@ -92,6 +67,33 @@ public class RequestService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static void broadCastPrimary(Integer primary) {
+        broadcast("Broadcast new Primary to 808", "update-primary/" + primary.toString());
+    }
+
+    private static void broadcast(String name, String param) {
+        Config.servers.stream()
+                .filter(s -> !s.equals(Config.id))
+                .forEach(s -> request("808" + s, name + s, param));
+    }
+
+    public static void broardCastNewUser(String nome) {
+        broadcast("Broadcast new User to 808", "user/addFromPrimary/" + nome);
+//        Config.servers.stream()
+//                .filter(s -> !Config.id.equals(s))
+//                .collect(Collectors.toList())
+//                .forEach(s -> request("808" + s, "Broadcast new User to 808" + s, "user/addFromPrimary/" + nome));
+    }
+
+    public static void broardCastRemoveUser(Long id) {
+        broadcast("Broadcast new User to 808", "user/removeFromPrimary/" + id);
+//        Config.servers.stream()
+//                .filter(s -> !Config.id.equals(s))
+//                .collect(Collectors.toList())
+//                .forEach(s -> request("808" + s, "Broadcast new User to 808" + s, "user/removeFromPrimary/" + id));
     }
 
 

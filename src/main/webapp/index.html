@@ -1,68 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>SD Concorrency</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <div>
-        <h2>Banco 1</h2><br/>
-        <div class="response" id="response1"></div>
-    </div>
-    <div>
-        <h2>Banco 2</h2><br/>
-        <div  class="response"id="response2"></div>
-    </div>
-    <div>
-        <h2>Banco 3</h2><br/>
-        <div class="response" id="response3"></div>
-    </div>
+<div>
+    <h2>Banco 1</h2> <strong onclick='desabilitar(8080)'>Desabilitar</strong></a> <strong onclick='habilitar(8080)'>Habilitar</strong></a><br/>
+    <div class="response" id="response1"></div>
+</div>
+<div>
+    <h2>Banco 2</h2> <strong onclick='desabilitar(8081)'>Desabilitar</strong></a> <strong onclick='habilitar(8081)'>Habilitar</strong></a><br/>
+    <div class="response" id="response2"></div>
+</div>
+<div>
+    <h2>Banco 3</h2> <strong onclick='desabilitar(8082)'>Desabilitar</strong></a>  <strong onclick='habilitar(8082)'>Habilitar</strong></a><br/>
+    <div class="response" id="response3"></div>
+</div>
+<div>
+    <h2>Banco 4</h2> <strong onclick='desabilitar(8083)'>Desabilitar</strong></a>   <strong onclick='habilitar(8083)'>Habilitar</strong></a>
+    <br/>
+    <div class="response" id="response4"></div>
+</div>
+<div>
+    <h2>Banco 5</h2> <strong onclick='desabilitar(8084)'>Desabilitar</strong></a>  <strong onclick='habilitar(8084)'>Habilitar</strong></a>
+    <br/>
+    <div class="response" id="response5"></div>
+</div>
 
-    <div class=div25>
-        <h2>Adicionar novo</h2>
-        <br/>
-        <input type="text" id='nome'><br>
-        <button onclick="adicionarUsuario(8080)">Adicionar em 1</button> <br><br>
-        <button onclick="adicionarUsuario(8081)">Adicionar em 2</button><br><br>
-        <button onclick="adicionarUsuario(8082)">Adicionar em 3</button><br><br>
-    </div>
-    <div class=div25>
-        <h2>Consultar por id</h2>
-        <br/>
-        <input type="text" id='id'>
-        <br>
-        <button onclick="consultarUsuario(8080)">Consultar em 1</button>
-        <br>
-        <br>
-        <button onclick="consultarUsuario(8081)">Consultar em 2</button>
-        <br>
-        <br>
-        <button onclick="consultarUsuario(8082)">Consultar em 3</button>
-        <br>
-        <br>
-         Resultado:
-        <span id='result_id'></span>
-        <br/>
-    </div>
-    <div class=div25>
-        <h2>Remover por id</h2>
-        <br/>
-        <input type="text" id='remove'>
-        <br>
-        <button onclick="removerUsuario(8080)">Consultar em 1</button>
-        <br>
-        <br>
-        <button onclick="removerUsuario(8081)">Consultar em 2</button>
-        <br>
-        <br>
-        <button onclick="removerUsuario(8082)">Consultar em 3</button>
-        <br>
-        <br>
-    </div>
+<div class=div25>
+    <h2>Adicionar novo</h2>
+    <br/>
+    <input type="text" id='nome'><br>
+    <button onclick="adicionarUsuario(8080)">Adicionar em 1</button>
+    <br><br>
+    <button onclick="adicionarUsuario(8081)">Adicionar em 2</button>
+    <br><br>
+    <button onclick="adicionarUsuario(8082)">Adicionar em 3</button>
+    <br><br>
+    <button onclick="adicionarUsuario(8083)">Adicionar em 4</button>
+    <br>
+    <br>
+    <button onclick="adicionarUsuario(8084)">Adicionar em 5</button>
+    <br>
+    <br>
+</div>
+<div class=div25>
+    <h2>Consultar por id</h2>
+    <br/>
+    <input type="text" id='id'>
+    <br>
+    <button onclick="consultarUsuario(8080)">Consultar em 1</button>
+    <br>
+    <br>
+    <button onclick="consultarUsuario(8081)">Consultar em 2</button>
+    <br>
+    <br>
+    <button onclick="consultarUsuario(8082)">Consultar em 3</button>
+    <br>
+    <br>
+    <button onclick="consultarUsuario(8083)">Consultar em 4</button>
+    <br>
+    <br>
+    <button onclick="consultarUsuario(8084)">Consultar em 5</button>
+    <br>
+    <br>
+    Resultado:
+    <span id='result_id'></span>
+    <br/>
+</div>
+<div class=div25>
+    <h2>Remover por id</h2>
+    <br/>
+    <input type="text" id='remove'>
+    <br>
+    <button onclick="removerUsuario(8080)">Remover em 1</button>
+    <br>
+    <br>
+    <button onclick="removerUsuario(8081)">Remover em 2</button>
+    <br>
+    <br>
+    <button onclick="removerUsuario(8082)">Remover em 3</button>
+    <br>
+    <br>
+    <button onclick="removerUsuario(8083)">Remover em 4</button>
+    <br>
+    <br>
+    <button onclick="removerUsuario(8084)">Remover em 5</button>
+    <br>
+    <br>
+</div>
 
-    <script>
+<script>
+let interval = 500;
         function request(port,param,callback){
             let url = "http://localhost:"+port+"/"+ param+"/1";
             let xhttp = new XMLHttpRequest();
@@ -77,8 +109,7 @@
 
         function updateTables(table,response){
             document.getElementById('response'+table).innerHTML = response;
-
-
+        }
         function adicionarUsuario(port){
             request(port, "api/user/add/"+document.getElementById('nome').value,function(){});
         }
@@ -90,20 +121,31 @@
         function removerUsuario(port){
             request(port, "api/user/remove/"+document.getElementById('remove').value,function(){});
         }
+
+        function desabilitar(port){
+            request(port, "api/disable/" , function () { });
+        }
+          function habilitar(port) {
+                request(port, "api/enable/", function () { });
+            }
+
         setInterval(function(){
             request(8080,"api/user",function(response){updateTables(1,response)});
-            // request(8081,"api/user",function(response){updateTables(2,response)});
-            // request(8082,"api/user",function(response){updateTables(3,response)});
-        },5000);
+             request(8081,"api/user",function(response){updateTables(2,response)});
+             request(8082,"api/user",function(response){updateTables(3, response) });
+            request(8083, "api/user", function (response) { updateTables(4, response) });
+             request(8084,"api/user",function(response){updateTables(5,response)});
+        },500);
      
-    </script>
-    <style>
-    .response{font-size:25px;}
+
+</script>
+<style>
+    .response{font-size:22px;}
     .div25{float:left;width:30%;text-align:center;}
     .div25 h2{text-align: center}
     input{
         padding:5px;
-        margin-bottom:20px;
+        margin-bottom:10px;
           display:block;
         width:50%;
         margin:auto;
@@ -113,6 +155,10 @@
         width:50%;
         margin:auto;
     }
-    </style>
+strong{
+    color:blue;
+    cursor:pointer;
+}
+</style>
 </body>
 </html>
